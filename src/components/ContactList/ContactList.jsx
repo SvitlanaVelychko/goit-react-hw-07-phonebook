@@ -1,27 +1,32 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact, getContacts, getFilter } from 'redux/contactsSlice';
+import Loader from 'components/Loader';
+import { useSelector } from 'react-redux';
+import { useDeleteContactMutation, useGetContactsQuery } from 'redux/contactsSlice';
+
+import { selectFilter } from 'redux/filterSlice';
 import { Contacts, ContactItem, DeleteBtn } from './ContactList.styled';
 
 const ContactList = () => {
-    const contacts = useSelector(getContacts);
-    const filter = useSelector(getFilter);
-    const dispatch = useDispatch();
+    const { data: contacts, isFetching} = useGetContactsQuery();
+    const [deleteContact, { isLoading: loading }] = useDeleteContactMutation();
+    const filter = useSelector(selectFilter);
 
-    const filteredContacts = contacts.filter(({name}) =>
-        name.toLowerCase().includes(filter.toLowerCase()));
+    const filteredContacts = contacts?.filter(({name}) =>
+        name.toLowerCase().includes(filter));
 
     return (
         <Contacts>
-            {filteredContacts.map(({id, name, number}) => (
+            {isFetching && <Loader />}
+            {filteredContacts?.length > 0 && (filteredContacts.map(({ id, name, phone }) => (
                 <ContactItem key={id}>
-                    <p>{name}: {number}</p>
+                    <p>{name}: {phone}</p>
                     <DeleteBtn
                         type="button"
-                        onClick={() => dispatch(deleteContact(id))}
+                        onClick={() => deleteContact(id)}
+                        disabled={loading}
                     >Delete contact
                     </DeleteBtn>
                 </ContactItem>
-            ))}
+            )))}
         </Contacts>
     );
 };

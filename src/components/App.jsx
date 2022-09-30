@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import ContactForm from "./ContactForm";
 import ContactList from "./ContactList";
 import Filter from "./Filter";
@@ -23,6 +25,14 @@ export const App = () => {
       backgroundColor="bgc"
     >
       <GlobalStyle />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        theme={'colored'}
+        closeOnClick
+      />
       <PageTitle>Phonebook</PageTitle>
       <ContactForm />
       <Section title="Contacts">

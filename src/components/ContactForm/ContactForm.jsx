@@ -1,9 +1,8 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from 'yup';
-import { useDispatch, useSelector } from "react-redux";
-import { nanoid } from "@reduxjs/toolkit";
-import { addContact, getContacts } from "redux/contactsSlice";
-import Notiflix from "notiflix";
+import { useGetContactsQuery, useAddContactMutation } from "redux/contactsSlice";
+import { toast } from 'react-toastify';
+import Loader from "components/Loader";
 import styled from "styled-components";
 import Section from "components/Section";
 import { Label, Error, AddBtn } from './ContactForm.styled';
@@ -40,25 +39,35 @@ const initialValues = {
 };
 
 const ContactForm = () => {
-    const contacts = useSelector(getContacts);
-    const dispatch = useDispatch();
+    const { data: contacts } = useGetContactsQuery();
+    const [addContact, { isLoading }] = useAddContactMutation();
 
-    const handleSubmit = e => {
-        e.preventDefault();
-        const form = e.currentTarget.elements;
-        const name = form.name.value;
-        const number = form.number.value;
+    const handleSubmit = async e => {
+        try {
+            e.preventDefault();
+            const form = e.currentTarget.elements;
+            const name = form.name.value;
+            const number = form.number.value;
         
-        const matcheContactName = contacts.find(contact =>
-            contact.name.toLowerCase() === name.toLowerCase());
-        const newContact = { id: nanoid(), name, number };
+            const matcheContactName = contacts.find(contact =>
+                contact.name.toLowerCase() === name.toLowerCase());
+            const newContact = {
+                name,
+                phone: number,
+            };
 
-        if (matcheContactName) {
-            return Notiflix.Notify.failure(`Sorry, ${name} is already in your contacts`);
-        } else {
-            dispatch(addContact(newContact));
+            if (matcheContactName) {
+                toast.warn(`Sorry, ${name} is already in your contacts`);
+                return;
+            } else {
+                await addContact(newContact);
+                toast.success('Contact added successfully!');
+                e.target.reset();
+            }
+        } catch (error) {
+            toast.error('Something is wrong. Try again');
+            console.log(error);
         }
-        e.target.reset();
     };
 
 
@@ -87,7 +96,7 @@ const ContactForm = () => {
                         />
                         <ErrorMessage name="number" render={msg => <Error>{numberError}</Error>} />
                     </Label>
-                    <AddBtn type="submit">Add contact</AddBtn>
+                    <AddBtn type="submit">{isLoading ? <Loader /> : 'Add contact'}</AddBtn>
                 </Form>
             </Formik>
         </Section>
