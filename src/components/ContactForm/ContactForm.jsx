@@ -1,37 +1,10 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as yup from 'yup';
+import { Formik, Form, ErrorMessage } from "formik";
 import { useGetContactsQuery, useAddContactMutation } from "redux/contactsSlice";
 import { toast } from 'react-toastify';
 import Loader from "components/Loader";
-import styled from "styled-components";
 import Section from "components/Section";
-import { Label, Error, AddBtn } from './ContactForm.styled';
-
-const Input = styled(Field)`
-    width: 100%;
-    height: 40px;
-    padding: ${p => p.theme.space[3]}px;
-    margin-bottom: ${p => p.theme.space[4]}px;
-    margin-top: ${p => p.theme.space[2]}px;
-    outline: none;
-    border: ${p => p.theme.borders.none};
-    border-radius: ${p => p.theme.radii.normal};
-
-    :hover, :focus {
-        border: ${p => p.theme.borders.normal};
-        border-color: ${p => p.theme.colors.bgcButton};
-    }
-`;
-
-const NAME_MATCH = "^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$";
-const nameError = "Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan";
-const numberError = "Phone number must be digits and can contain spaces, dashes, parentheses and can start with +";
-const requiredError = "This field is required";
-
-const schema = yup.object().shape({
-    name: yup.string().required(requiredError).matches(NAME_MATCH, nameError),
-    number: yup.string().required(requiredError).matches(/\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/, numberError),
-});
+import { NAME_MATCH, nameError, numberError, schema } from "constants";
+import { Input, Label, Error, AddBtn } from './ContactForm.styled';
 
 const initialValues = {
     name: '',
@@ -66,7 +39,6 @@ const ContactForm = () => {
             }
         } catch (error) {
             toast.error('Something is wrong. Try again');
-            console.log(error);
         }
     };
 

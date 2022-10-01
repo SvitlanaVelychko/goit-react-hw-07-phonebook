@@ -1,5 +1,19 @@
 import { Field } from "formik";
 import styled from "styled-components";
+import { FaRegWindowClose } from "react-icons/fa";
+
+export const CloseBtn = styled(FaRegWindowClose)`
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+    color: red;
+    }
+`;
 
 export const Input = styled(Field)`
     width: 100%;
@@ -29,7 +43,7 @@ export const Error = styled.div`
     color: ${p => p.theme.colors.accent};
 `;
 
-export const AddBtn = styled.button`
+export const UpdateBtn = styled.button`
     width: 150px;
     height: 40px;
     margin: 20px auto;
