@@ -30,7 +30,7 @@ const ContactForm = () => {
             };
 
             if (matcheContactName) {
-                toast.warn(`Sorry, ${name} is already in your contacts`);
+                toast.warn(`Sorry, ${name} is already in your contacts!`);
                 return;
             } else {
                 await addContact(newContact);
@@ -38,7 +38,7 @@ const ContactForm = () => {
                 e.target.reset();
             }
         } catch (error) {
-            toast.error('Something is wrong. Try again');
+            toast.error('Something is wrong. Try again!');
         }
     };
 
